@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +11,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WiseCrackCollector.styles.css" asp-append-version="true" />
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0; /* remove the gap so it doesn't close */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -22,9 +32,30 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown">
+                                <button class="btn text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Groups
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-light">
+                                    <li><a class="dropdown-item nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">My groups</a></li>
+                                    <li><a class="dropdown-item nav-link text-dark" asp-area="Web" asp-controller="Wisecrack" asp-action="Token">Group list</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <button class="btn text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Wisecracks
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-light">
+                                    <li><a class="dropdown-item nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">My wisecracks</a></li>
+                                    <li><a class="dropdown-item nav-link text-dark" asp-area="Web" asp-controller="Wisecrack" asp-action="Token">Wisecrack list</a></li>
+                                    <li><a class="dropdown-item nav-link text-dark" asp-area="Web" asp-controller="Wisecrack" asp-action="Token">Random wisecracks</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
