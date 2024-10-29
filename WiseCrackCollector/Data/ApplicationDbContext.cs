@@ -33,10 +33,10 @@ namespace WiseCrackCollector.Data
              .WithOne(w => w.Group)
              .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<UserGroupPermission>().HasKey(p => new { p.UserId, p.GroupId });
+            builder.Entity<UserGroupPermissionSet>().HasKey(p => new { p.UserId, p.GroupId });
         }
         public DbSet<Wisecrack> Wisecracks { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<UserGroupPermission> UserGroupPermissions { get; set; }
+        public DbSet<UserGroupPermissionSet> UserGroupPermissions { get; set; }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using WiseCrackCollector.Data;
 using WiseCrackCollector.Models;
 using WiseCrackCollector.Services;
 
@@ -58,7 +55,7 @@ namespace WiseCrackCollector.Controllers
             if (userId == null) return BadRequest();
 
             string newGroupId = wccService.CreateGroup(userId, new_group_name);
-            return RedirectToAction("MyGroups");
+            return RedirectToAction("ViewGroup", new { groupId = newGroupId });
         }
 
         [Authorize]
@@ -68,10 +65,11 @@ namespace WiseCrackCollector.Controllers
             string? userId = GetCurrentUserId();
             if (userId == null) return BadRequest();
 
-            UserGroupPermission? userGroupPermission = wccService.GetUserGroupPermission(userId, groupId);
             Group? group = wccService.GetGroupById(groupId);
             if (group == null)
                 return NotFound();
+
+            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, groupId);
             if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Read))
                 return Forbid();
             
@@ -79,6 +77,44 @@ namespace WiseCrackCollector.Controllers
             ViewBag.Permissions = userGroupPermission;
 
             return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteGroup(string delete_group_id) 
+        {
+            string? userId = GetCurrentUserId();
+            if (userId == null) return BadRequest();
+
+            Group? group = wccService.GetGroupById(delete_group_id);
+            if (group == null)
+                return NotFound();
+
+            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, delete_group_id);
+            if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Delete))
+                return Forbid();
+
+            wccService.DeleteGroup(delete_group_id);
+            return RedirectToAction("MyGroups");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult EditGroup(string edit_group_id, string edit_group_name)
+        {
+            string? userId = GetCurrentUserId();
+            if (userId == null) return BadRequest();
+
+            Group? group = wccService.GetGroupById(edit_group_id);
+            if (group == null)
+                return NotFound();
+
+            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, edit_group_id);
+            if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Update))
+                return Forbid();
+
+            wccService.EditGroup(edit_group_id, edit_group_name);
+            return RedirectToAction("MyGroups");
         }
     }
 }

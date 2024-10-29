@@ -44,9 +44,21 @@ namespace WiseCrackCollector.Services
             return group;
         }
 
-        public UserGroupPermission? GetUserGroupPermission(string userId, string groupId)
+        public UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId)
         {
             return dbContext.UserGroupPermissions.FirstOrDefault(p => p.UserId.Equals(userId) && p.GroupId.Equals(groupId));
+        }
+
+        public void DeleteGroup(string groupId)
+        {
+            Group group = dbContext.Groups.First(g => g.Id.Equals(groupId));
+            dbContext.Groups.Remove(group);
+            dbContext.SaveChanges();
+        }
+
+        public void EditGroup(string groupId, string groupName)
+        {
+            dbContext.Groups.Where(g => g.Id.Equals(groupId)).ExecuteUpdate(g => g.SetProperty(n => n.Name, groupName));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Web
 @model List<Group>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
@@ -61,7 +62,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="deleteGroupForm" asp-area="Web" asp-controller="Wisecrack" asp-action="DeleteGroup" method="post">
+            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteGroup" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -72,7 +73,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-danger" value="Delete"></input>
+                    <input type="submit" class="btn btn-danger" value="Delete" />
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -91,7 +92,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="editGroupForm" asp-area="Web" asp-controller="Wisecrack" asp-action="EditGroup" method="post">
+            <form id="editGroupForm" asp-controller="WcC" asp-action="EditGroup" method="post">
                 <!-- Modal body -->
                 <input type="hidden" name="edit_group_id" id="edit_group_id" value="" />
                 <div class="modal-body">
@@ -111,7 +112,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Modify"></input>
+                    <input type="submit" class="btn btn-primary" value="Modify" />
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
@@ -148,10 +149,10 @@
                     @{
                         string createdAt = group.CreatedAt.ToString("yyyy-MM-dd");
                     }
-                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditGroup" onclick="SetGroupEditorData('@group.Id', '@group.Name', '@group.Owner.UserName', '@createdAt');">
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditGroup" onclick="SetGroupEditorData('@group.Id', '@HttpUtility.HtmlEncode(group.Name)', '@HttpUtility.HtmlEncode(group.Owner.UserName)', '@createdAt');">
                         Edit
                     </button>
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteGroup" onclick="SetGroupDeleteID('@group.Id', '@group.Name')">
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteGroup" onclick="SetGroupDeleteID('@group.Id', '@HttpUtility.HtmlEncode(group.Name)')">
                         Delete
                     </button>
                 </td>

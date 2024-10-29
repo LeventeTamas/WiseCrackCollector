@@ -12,7 +12,7 @@ namespace WiseCrackCollector.Models
     }
 
     [Table("UserGroupPermissions")]
-    public class UserGroupPermission
+    public class UserGroupPermissionSet
     {
         [Required]
         public string UserId { get; set; }
