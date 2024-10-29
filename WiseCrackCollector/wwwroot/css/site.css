@@ -20,3 +20,22 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.menu-row {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.list-title {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}

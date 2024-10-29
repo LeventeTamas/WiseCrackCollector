@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model List<Group>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<h1>My Groups</h1>
+
+<div class="row menu-row">
+    <div class="col">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNewGroup">
+            New Group
+        </button>
+    </div>
+</div>
+
+<!-- New Group Modal -->
+<div class="modal" id="modalNewGroup">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">New Group</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="newGroupForm" asp-controller="WcC" asp-action="NewGroup" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new_group_owner" class="col-form-label">Owner:</label>
+                        <input type="text" name="new_group_owner" class="form-control" id="new_group_owner" value="@User.Identity?.Name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_group_name" class="col-form-label">Group name:</label>
+                        <input type="text" name="new_group_name" class="form-control" id="new_group_name" minlength="3" maxlength="100">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Create" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Group Modal -->
+<div class="modal" id="modalDeleteGroup">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Group</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="deleteGroupForm" asp-area="Web" asp-controller="Wisecrack" asp-action="DeleteGroup" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Are you sure you want to delete the group "<span id="delete_group_name"></span>", including all the wisecracks in it?</label>
+                        <input type="hidden" name="delete_group_id" id="delete_group_id" value="" />
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Delete"></input>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Group Modal -->
+<div class="modal" id="modalEditGroup">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Group</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="editGroupForm" asp-area="Web" asp-controller="Wisecrack" asp-action="EditGroup" method="post">
+                <!-- Modal body -->
+                <input type="hidden" name="edit_group_id" id="edit_group_id" value="" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_group_owner" class="col-form-label">Owner:</label>
+                        <input type="text" name="edit_group_owner" class="form-control" id="edit_group_owner" value="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_group_name" class="col-form-label">Name:</label>
+                        <input type="text" name="edit_group_name" class="form-control" id="edit_group_name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_group_date" class="col-form-label">Date:</label>
+                        <input type="text" class="form-control" name="edit_group_date" id="edit_group_date" readonly>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Modify"></input>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- List -->
+<h3 class="list-title">Group List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th># of wisecracks</th>
+            <th>Created At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td>
+                    <a class="text-dark" asp-controller="WcC" asp-action="ViewGroup" asp-route-groupId="@group.Id">@group.Name</a>
+                </td>
+                <td>@group.Owner.UserName</td>
+                <td>@group.Wisecracks.Count()</td>
+                <td>@group.CreatedAt.ToString("yyyy.MM.dd")</td>
+                <td class="text-end">
+                    @{
+                        string createdAt = group.CreatedAt.ToString("yyyy-MM-dd");
+                    }
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditGroup" onclick="SetGroupEditorData('@group.Id', '@group.Name', '@group.Owner.UserName', '@createdAt');">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteGroup" onclick="SetGroupDeleteID('@group.Id', '@group.Name')">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

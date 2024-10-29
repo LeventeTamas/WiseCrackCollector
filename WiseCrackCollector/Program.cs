@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WiseCrackCollector.Data;
 using Microsoft.AspNetCore.Identity;
+using WiseCrackCollector.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
     }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<IWcCService, WcCService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
