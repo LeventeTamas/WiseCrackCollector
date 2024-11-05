@@ -40,8 +40,7 @@ namespace WiseCrackCollector.Services
 
         public Group? GetGroupById(string groupId)
         {
-            Group? group = dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).FirstOrDefault(g => g.Id.Equals(groupId));
-            return group;
+            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).FirstOrDefault(g => g.Id.Equals(groupId));
         }
 
         public UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId)
@@ -51,6 +50,8 @@ namespace WiseCrackCollector.Services
 
         public void DeleteGroup(string groupId)
         {
+            EmptyGroup(groupId);
+
             Group group = dbContext.Groups.First(g => g.Id.Equals(groupId));
             dbContext.Groups.Remove(group);
             dbContext.SaveChanges();
@@ -70,6 +71,35 @@ namespace WiseCrackCollector.Services
             newWisecrack.Group = group;
 
             dbContext.Wisecracks.Add(newWisecrack);
+            dbContext.SaveChanges();
+        }
+
+        public Wisecrack? GetWisecrackById(string delete_wc_id)
+        {
+            return dbContext.Wisecracks.Include(w => w.Group).Include(w => w.Group.Owner).Include(w => w.Owner).FirstOrDefault(w => w.Id.Equals(delete_wc_id));
+        }
+
+        public void DeleteWisecrack(Wisecrack wisecrack)
+        {
+            dbContext.Remove(wisecrack);
+            dbContext.SaveChanges();
+        }
+
+        public void EmptyGroup(string empty_group_id)
+        {
+            IQueryable<Wisecrack> wisecrackList = dbContext.Wisecracks.Include(w => w.Group).Where(w => w.Group.Id.Equals(empty_group_id));
+            foreach (var item in wisecrackList)
+                dbContext.Wisecracks.Remove(item);
+            dbContext.SaveChanges();
+        }
+
+        public void UpdateWisecrack(string wisecrackId, string newContent, string newSaidBy, string newCreatedAt)
+        {
+            Wisecrack wisecrack = GetWisecrackById(wisecrackId);
+            wisecrack.Content = newContent;
+            wisecrack.CreatedAt = DateTime.Parse(newCreatedAt);
+            wisecrack.SaidBy = newSaidBy;
+
             dbContext.SaveChanges();
         }
     }

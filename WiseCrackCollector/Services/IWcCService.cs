@@ -12,5 +12,9 @@ namespace WiseCrackCollector.Services
         void DeleteGroup(string groupId);
         void EditGroup(string groupId, string groupName);
         void AddWisecrack(Wisecrack newWisecrack, string groupId, string userId);
+        Wisecrack? GetWisecrackById(string delete_wc_id);
+        void DeleteWisecrack(Wisecrack wisecrack);
+        void EmptyGroup(string empty_group_id);
+        void UpdateWisecrack(string wisecrackId, string newContent, string newSaidBy, string newCreatedAt);
     }
 }

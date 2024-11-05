@@ -29,8 +29,8 @@
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteGroup">
             Delete Group
         </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEmptyList">
-            Empty List
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEmptyGroup">
+            Empty Group
         </button>
     </div>
 </div>
@@ -76,7 +76,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteWisecrack" method="post">
+            <form id="deleteWisecrackForm" asp-controller="WcC" asp-action="DeleteWisecrack" method="post">
                 <!-- Modal body -->
                 <input type="hidden" id="delete_wc_id" name="delete_wc_id" />
                 <div class="modal-body">
@@ -96,22 +96,22 @@
 </div>
 
 <!-- Delete All Wisecracks Modal -->
-<div class="modal" id="modalEmptyList">
+<div class="modal" id="modalEmptyGroup">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Delete Wisecracks</h4>
+                <h4 class="modal-title">Empty Group</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="emptyListForm" asp-controller="WcC" asp-action="EmptyWisecrackList" method="post">
+            <form id="emptyGroupForm" asp-controller="WcC" asp-action="EmptyGroup" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label">Are you sure you want to delete all wisecracks in this group?</label>
-                        <input type="hidden" name="delete_all_wc_group_id" value="@Model.Group.Id" />
+                        <input type="hidden" name="empty_group_id" value="@Model.Group.Id" />
                     </div>
                 </div>
 
@@ -175,9 +175,9 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="editWisecrackForm" asp-controller="WcC" asp-action="EditWisecrack" method="post">
+            <form id="editWisecrackForm" asp-controller="WcC" asp-action="UpdateWisecrack" method="post">
                 <!-- Modal body -->
-                <input type="hidden" name="wc_edit_id" id="wc_edit_id" value="" />
+                <input type="hidden" name="edit_wc_id" id="edit_wc_id" value="" />
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit_wc_saidBy" class="col-form-label">Who said it?</label>
@@ -195,7 +195,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Modify" />
+                    <input type="submit" class="btn btn-primary" value="Save" />
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
