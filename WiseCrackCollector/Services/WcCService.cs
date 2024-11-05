@@ -60,5 +60,17 @@ namespace WiseCrackCollector.Services
         {
             dbContext.Groups.Where(g => g.Id.Equals(groupId)).ExecuteUpdate(g => g.SetProperty(n => n.Name, groupName));
         }
+
+        public void AddWisecrack(Wisecrack newWisecrack, string groupId, string userId)
+        {
+            IdentityUser user = dbContext.Users.First(u => u.Id.Equals(userId));
+            Group group = dbContext.Groups.First(g => g.Id.Equals(groupId));
+
+            newWisecrack.Owner = user;
+            newWisecrack.Group = group;
+
+            dbContext.Wisecracks.Add(newWisecrack);
+            dbContext.SaveChanges();
+        }
     }
 }

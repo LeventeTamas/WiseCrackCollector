@@ -13,14 +13,14 @@ function SetGroupEditorData(id, name, owner, createdAt) {
     document.getElementById('edit_group_owner').value = decodeHtml(owner);
     document.getElementById('edit_group_date').value = createdAt;
 }
-function SetWisecrackEditorData(id, author, content, date) {
-    document.getElementById('wc_edit_id').value = id;
-    document.getElementById('wc_edit_author').value = decodeHtml(author);
-    document.getElementById('wc_edit_content').value = decodeHtml(content);
-    document.getElementById('wc_edit_date').value = date;
+function SetWisecrackEditorData(id, saidBy, content, date) {
+    document.getElementById('edit_wc_id').value = id;
+    document.getElementById('edit_wc_saidBy').value = decodeHtml(saidBy);
+    document.getElementById('edit_wc_content').value = decodeHtml(content);
+    document.getElementById('edit_wc_date').value = date;
 }
 function SetWisecrackDeleteID(id) {
-    document.getElementById('wc_delete_id').value = id;
+    document.getElementById('delete_wc_id').value = id;
 }
 
 function decodeHtml(html) {

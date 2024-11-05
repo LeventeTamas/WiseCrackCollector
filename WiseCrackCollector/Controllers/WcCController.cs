@@ -37,6 +37,8 @@ namespace WiseCrackCollector.Controllers
             return View();
         }
 
+        #region Groups
+
         [Authorize]
         public IActionResult MyGroups() 
         {
@@ -55,28 +57,7 @@ namespace WiseCrackCollector.Controllers
             if (userId == null) return BadRequest();
 
             string newGroupId = wccService.CreateGroup(userId, new_group_name);
-            return RedirectToAction("ViewGroup", new { groupId = newGroupId });
-        }
-
-        [Authorize]
-        [Route("/WcC/ViewGroup/{groupId}")]
-        public IActionResult ViewGroup(string groupId) 
-        {
-            string? userId = GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(groupId);
-            if (group == null)
-                return NotFound();
-
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, groupId);
-            if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Read))
-                return Forbid();
-            
-            ViewBag.Group = group;
-            ViewBag.Permissions = userGroupPermission;
-
-            return View();
+            return RedirectToAction("Group", new { groupId = newGroupId });
         }
 
         [Authorize]
@@ -116,5 +97,88 @@ namespace WiseCrackCollector.Controllers
             wccService.EditGroup(edit_group_id, edit_group_name);
             return RedirectToAction("MyGroups");
         }
+
+        [Authorize]
+        [Route("/WcC/Group/{groupId}")]
+        public IActionResult Group(string groupId)
+        {
+            string? userId = GetCurrentUserId();
+            if (userId == null) return BadRequest();
+
+            Group? group = wccService.GetGroupById(groupId);
+            if (group == null)
+                return NotFound();
+
+            // Check permission
+            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, groupId);
+
+            if(userGroupPermission == null && group.Owner.Id.Equals(userId))
+            {
+                userGroupPermission = new UserGroupPermissionSet()
+                {
+                    Read = true,
+                    Add = true,
+                    Update = true,
+                    Delete = true
+                };
+            }
+            else if (userGroupPermission == null || !userGroupPermission.Read)
+            {
+                return Forbid();
+            }
+
+            // Create view model
+            GroupViewModel groupViewModel = new GroupViewModel()
+            {
+                Group = group,
+                Permissions = userGroupPermission,
+                SortBy = WisecrackListSortBy.Date,
+                SortOrder = WisecrackListSortOrder.Descending
+            };
+
+            return View(groupViewModel);
+        }
+
+        #endregion
+
+        #region Wisecracks
+        [Authorize]
+        public IActionResult AddWisecrack(string new_wc_group_id, string new_wc_content, string? new_wc_saidBy)
+        {
+            string? userId = GetCurrentUserId();
+            if (userId == null) return BadRequest();
+
+            Group? group = wccService.GetGroupById(new_wc_group_id);
+            if (group == null)
+                return NotFound();
+
+            // Check permission
+            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, new_wc_group_id);
+
+            if (userGroupPermission == null && group.Owner.Id.Equals(userId))
+            {
+                userGroupPermission = new UserGroupPermissionSet()
+                {
+                    Read = true,
+                    Add = true,
+                    Update = true,
+                    Delete = true
+                };
+            }
+            else if (userGroupPermission == null || !userGroupPermission.Add)
+            {
+                return Forbid();
+            }
+
+            Wisecrack newWisecrack = new Wisecrack() { 
+                Content = new_wc_content,
+                SaidBy = new_wc_saidBy == null ? "unknown" : new_wc_saidBy
+            };
+
+            wccService.AddWisecrack(newWisecrack, new_wc_group_id, userId);
+
+            return RedirectToAction("Group", new { groupId = new_wc_group_id });
+        }
+        #endregion
     }
 }

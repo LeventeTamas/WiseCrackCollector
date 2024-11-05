@@ -1,0 +1,260 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@model GroupViewModel
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+
+
+
+<h1>Group: @Model.Group.Name</h1>
+
+<!-- Buttons -->
+<div class="row menu-row">
+    <div class="col">
+        <form asp-controller="WcC" asp-action="MyGroups" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-outline-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                </svg>
+                My Groups
+            </button>
+        </form>
+        |
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNewWisecrack">
+            Add Wisecrack
+        </button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteGroup">
+            Delete Group
+        </button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEmptyList">
+            Empty List
+        </button>
+    </div>
+</div>
+
+<!-- Delete Group Modal -->
+<div class="modal" id="modalDeleteGroup">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Group</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteGroup" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Are you sure you want to delete this group, including all the wisecracks in it?</label>
+                        <input type="hidden" name="delete_group_id" value="@Model.Group.Id" />
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Delete" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Wisecrack Modal -->
+<div class="modal" id="modalDeleteWisecrack">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Wisecrack</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteWisecrack" method="post">
+                <!-- Modal body -->
+                <input type="hidden" id="delete_wc_id" name="delete_wc_id" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Are you sure you want to delete this wisecrack?</label>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Delete" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Wisecracks Modal -->
+<div class="modal" id="modalEmptyList">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Wisecracks</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="emptyListForm" asp-controller="WcC" asp-action="EmptyWisecrackList" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Are you sure you want to delete all wisecracks in this group?</label>
+                        <input type="hidden" name="delete_all_wc_group_id" value="@Model.Group.Id" />
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Delete"/>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- New Wiscrack Modal -->
+<div class="modal" id="modalNewWisecrack">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add New Wisecrack</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="newWisecrackForm" asp-controller="WcC" asp-action="AddWisecrack" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new_wc_group" class="col-form-label">Group:</label>
+                        <input type="text" name="wc_group" class="form-control" id="wc_group" value="@Model.Group.Name" readonly>
+                        <input type="hidden" name="new_wc_group_id" value="@Model.Group.Id" />
+                    </div>
+                    <div class="form-group">
+                        <label for="new_wc_saidBy" class="col-form-label">Who said it? (optional)</label>
+                        <input type="text" name="new_wc_saidBy" class="form-control" id="new_wc_saidBy">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_wc_content" class="col-form-label">Wisecrack:</label>
+                        <input type="text" name="new_wc_content" class="form-control" id="new_wc_content" required>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Add" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Wisecrack Modal -->
+<div class="modal" id="modalEditWisecrack">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Wisecrack</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="editWisecrackForm" asp-controller="WcC" asp-action="EditWisecrack" method="post">
+                <!-- Modal body -->
+                <input type="hidden" name="wc_edit_id" id="wc_edit_id" value="" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_wc_saidBy" class="col-form-label">Who said it?</label>
+                        <input type="text" name="edit_wc_saidBy" class="form-control" id="edit_wc_saidBy" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_wc_content" class="col-form-label">Wisecrack:</label>
+                        <input type="text" name="edit_wc_content" class="form-control" id="edit_wc_content" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_wc_date" class="col-form-label">Date:</label>
+                        <input type="date" placeholder="yyyy-mm-dd" min="2000-01-01" max="2099-12-31" class="form-control" name="edit_wc_date" id="edit_wc_date">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Modify" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h3 class="list-title">WiseCrack List</h3>
+
+
+<!-- List -->
+@{
+    string GetNewSortOrder(WisecrackListSortBy sortBy)
+    {
+        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "Descending" : "Ascending") : "Ascending";
+    }
+    string GetSortIconCssClass(WisecrackListSortBy sortBy)
+    {
+        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "fas fa-sort-up" : "fas fa-sort-down") : "";
+    }
+
+    WisecrackListSortBy[] headers = { WisecrackListSortBy.Author, WisecrackListSortBy.Content, WisecrackListSortBy.Views, WisecrackListSortBy.Date };
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            @foreach (WisecrackListSortBy header in headers)
+            {
+                <th>
+                    <a class="text-dark" asp-controller="WcC" asp-action="Group" asp-route-SortBy="@header.ToString()" asp-route-SortOrder="@GetNewSortOrder(header)">
+                        @header.ToString()
+                        <i class="@GetSortIconCssClass(header)"></i>
+                    </a>
+                </th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wisecrack in Model.Group.Wisecracks)
+        {
+            <tr>
+                <td>@wisecrack.SaidBy</td>
+                <td>@wisecrack.Content</td>
+                <td>@wisecrack.Views</td>
+                <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
+                <td class="text-end">
+                    @{
+                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
+                    }
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditWisecrack" onclick="SetWisecrackEditorData('@wisecrack.Id', '@wisecrack.SaidBy', '@wisecrack.Content', '@addedAt');">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteWisecrack" onclick="SetWisecrackDeleteID('@wisecrack.Id')">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
