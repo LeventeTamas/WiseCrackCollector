@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using WiseCrackCollector.Data;
 using WiseCrackCollector.Models;
 
@@ -8,10 +10,39 @@ namespace WiseCrackCollector.Services
     public class WcCService : IWcCService
     {
         private ApplicationDbContext dbContext;
+        private IHttpContextAccessor httpContextAccessor;
 
-        public WcCService(ApplicationDbContext _dbContext) 
+        public WcCService(ApplicationDbContext _dbContext, IHttpContextAccessor _httpContextAccessor) 
         { 
             dbContext = _dbContext;
+            httpContextAccessor = _httpContextAccessor;
+        }
+
+        public bool CheckPermissionOnGroup(string userId, Group group, UserGroupPermissionType permission, out UserGroupPermissionSet userGroupPermissionSet)
+        {
+
+            if (group.Owner.Id.Equals(userId))
+            {
+                userGroupPermissionSet = new UserGroupPermissionSet() { Read = true, Update = true, Delete = true, Add = true, ManageMembers = true };
+                return true;
+            }
+
+            userGroupPermissionSet = GetUserGroupPermissions(userId, group.Id);
+            return userGroupPermissionSet != null && userGroupPermissionSet.CheckPermission(permission);
+        }
+
+        public string? GetCurrentUserId()
+        {
+            HttpContext? httpContext = httpContextAccessor.HttpContext;
+            if (httpContext == null) return null;
+
+            ClaimsIdentity? identity = (ClaimsIdentity?)httpContext.User.Identity;
+            if (identity == null) return null;
+
+            Claim? claim = identity.FindFirst(ClaimTypes.NameIdentifier);
+            if (claim == null) return null;
+
+            return claim.Value;
         }
 
         public List<Group> GetGroupsOwnedByUser(string userId)

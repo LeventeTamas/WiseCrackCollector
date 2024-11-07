@@ -14,7 +14,7 @@
 <!-- Buttons -->
 <div class="row menu-row">
     <div class="col">
-        <form asp-controller="WcC" asp-action="MyGroups" method="post" style="display: inline;">
+        <form asp-controller="Groups" asp-action="MyGroups" method="post" style="display: inline;">
             <button type="submit" class="btn btn-outline-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
@@ -39,7 +39,7 @@
         }
         @if (Model.Permissions.ManageMembers)
         {
-            <form asp-controller="WcC" asp-action="Members" method="post" style="display: inline;">
+            <form asp-controller="Members" asp-route-groupId="@Model.Group.Id" style="display: inline;">
                 <button type="submit" class="btn btn-outline-dark">
                     Members
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -63,7 +63,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteGroup" method="post">
+            <form id="deleteGroupForm" asp-controller="Groups" asp-action="Delete" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -93,7 +93,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="emptyGroupForm" asp-controller="WcC" asp-action="EmptyGroup" method="post">
+            <form id="emptyGroupForm" asp-controller="Groups" asp-action="Empty" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -123,7 +123,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="newWisecrackForm" asp-controller="WcC" asp-action="AddWisecrack" method="post">
+            <form id="newWisecrackForm" asp-controller="Wisecracks" asp-action="Add" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -151,4 +151,4 @@
     </div>
 </div>
 
-<partial name="WisecrackListModule" />
+<partial name="/Views/Shared/WisecrackListModule.cshtml" />

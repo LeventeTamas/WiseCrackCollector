@@ -9,7 +9,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="deleteWisecrackForm" asp-controller="WcC" asp-action="DeleteWisecrack" method="post">
+            <form id="deleteWisecrackForm" asp-controller="Wisecracks" asp-action="Delete" method="post">
                 <!-- Modal body -->
                 <input type="hidden" id="delete_wc_id" name="delete_wc_id" />
                 <div class="modal-body">
@@ -39,7 +39,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="editWisecrackForm" asp-controller="WcC" asp-action="UpdateWisecrack" method="post">
+            <form id="editWisecrackForm" asp-controller="Wisecracks" asp-action="Update" method="post">
                 <!-- Modal body -->
                 <input type="hidden" name="edit_wc_id" id="edit_wc_id" value="" />
                 <div class="modal-body">
@@ -90,7 +90,7 @@
             @foreach (WisecrackListSortBy header in headers)
             {
                 <th>
-                    <a class="text-dark" asp-controller="WcC" asp-action="Group" asp-route-SortBy="@header.ToString()" asp-route-SortOrder="@GetNewSortOrder(header)">
+                    <a class="text-dark" asp-route-SortBy="@header.ToString()" asp-route-SortOrder="@GetNewSortOrder(header)">
                         @header.ToString()
                         <i class="@GetSortIconCssClass(header)"></i>
                     </a>

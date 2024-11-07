@@ -4,6 +4,8 @@ namespace WiseCrackCollector.Services
 {
     public interface IWcCService
     {
+        string? GetCurrentUserId();
+        bool CheckPermissionOnGroup(string userId, Group group, UserGroupPermissionType permission, out UserGroupPermissionSet userGroupPermissionSet);
         UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId);
 
         List<Group> GetGroupsOwnedByUser(string userId);

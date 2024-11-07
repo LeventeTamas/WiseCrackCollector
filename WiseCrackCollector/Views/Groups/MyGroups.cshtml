@@ -28,7 +28,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="newGroupForm" asp-controller="WcC" asp-action="NewGroup" method="post">
+            <form id="newGroupForm" asp-controller="Groups" asp-action="New" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -62,7 +62,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="deleteGroupForm" asp-controller="WcC" asp-action="DeleteGroup" method="post">
+            <form id="deleteGroupForm" asp-controller="Groups" asp-action="Delete" method="post">
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
@@ -92,7 +92,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="editGroupForm" asp-controller="WcC" asp-action="EditGroup" method="post">
+            <form id="editGroupForm" asp-controller="Groups" asp-action="Update" method="post">
                 <!-- Modal body -->
                 <input type="hidden" name="edit_group_id" id="edit_group_id" value="" />
                 <div class="modal-body">
@@ -120,9 +120,6 @@
     </div>
 </div>
 
-
-
-
 <!-- List -->
 <h3 class="list-title">Group List</h3>
 <table class="table">
@@ -140,7 +137,7 @@
         {
             <tr>
                 <td>
-                    <a class="text-dark" asp-controller="WcC" asp-action="Group" asp-route-groupId="@group.Id">@group.Name</a>
+                    <a class="text-dark" asp-controller="Groups" asp-action="Details" asp-route-groupId="@group.Id">@group.Name</a>
                 </td>
                 <td>@group.Owner.UserName</td>
                 <td>@group.Wisecracks.Count()</td>
