@@ -5,10 +5,11 @@ namespace WiseCrackCollector.Models
 {
     public enum UserGroupPermissionType
     {
-        Read = 1,
-        Add = 2,
-        Update = 4,
-        Delete = 8
+        Read,
+        Add,
+        Update,
+        Delete,
+        ManageMembers
     }
 
     [Table("UserGroupPermissions")]
@@ -32,30 +33,25 @@ namespace WiseCrackCollector.Models
         [Required]
         public bool Delete { get; set; } = false;
 
+        [Required]
+        public bool ManageMembers { get; set; } = false;
+
         public bool CheckPermission(UserGroupPermissionType permissionType)
         {
             switch (permissionType)
             {
                 case UserGroupPermissionType.Read:
-                    {
-                        return Read;
-                    }
+                    return Read;  
                 case UserGroupPermissionType.Add:
-                    {
-                        return Add;
-                    }
+                    return Add;   
                 case UserGroupPermissionType.Update:
-                    {
-                        return Update;
-                    }
+                    return Update;
                 case UserGroupPermissionType.Delete:
-                    {
-                        return Delete;
-                    }
+                    return Delete;
+                case UserGroupPermissionType.ManageMembers:
+                    return ManageMembers;
                 default:
-                    {
-                        return false;
-                    }
+                    return false;
             }
         }
     }

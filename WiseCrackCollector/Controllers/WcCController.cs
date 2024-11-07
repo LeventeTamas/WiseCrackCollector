@@ -36,7 +36,7 @@ namespace WiseCrackCollector.Controllers
 
             if (group.Owner.Id.Equals(userId))
             {
-                userGroupPermissionSet = new UserGroupPermissionSet() { Read = true, Update = true, Delete = true, Add = true };
+                userGroupPermissionSet = new UserGroupPermissionSet() { Read = true, Update = true, Delete = true, Add = true, ManageMembers = true };
                 return true;
             }
 
@@ -134,6 +134,7 @@ namespace WiseCrackCollector.Controllers
             GroupViewModel groupViewModel = new GroupViewModel()
             {
                 Group = group,
+                Wisecracks = group.Wisecracks,
                 Permissions = userGroupPermissionSet,
                 SortBy = WisecrackListSortBy.Date,
                 SortOrder = WisecrackListSortOrder.Descending

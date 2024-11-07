@@ -18,6 +18,7 @@
     public class GroupViewModel
     {
         public Group Group { get; set; }
+        public List<Wisecrack> Wisecracks { get; set; }
         public UserGroupPermissionSet Permissions { get; set; }
         public WisecrackListSortBy SortBy { get; set; }
         public WisecrackListSortOrder SortOrder { get; set; }

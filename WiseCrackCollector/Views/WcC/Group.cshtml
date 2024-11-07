@@ -22,16 +22,33 @@
                 My Groups
             </button>
         </form>
-        |
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNewWisecrack">
-            Add Wisecrack
-        </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteGroup">
-            Delete Group
-        </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEmptyGroup">
-            Empty Group
-        </button>
+        @if (Model.Permissions.Add)
+        {
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNewWisecrack">
+                Add Wisecrack
+            </button>
+        }
+        @if (Model.Permissions.Delete)
+        {
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteGroup">
+                Delete Group
+            </button>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEmptyGroup">
+                Empty Group
+            </button>
+        }
+        @if (Model.Permissions.ManageMembers)
+        {
+            <form asp-controller="WcC" asp-action="Members" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-outline-dark">
+                    Members
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                    </svg>
+                </button>
+            </form>
+        }
+
     </div>
 </div>
 
@@ -52,36 +69,6 @@
                     <div class="form-group">
                         <label class="col-form-label">Are you sure you want to delete this group, including all the wisecracks in it?</label>
                         <input type="hidden" name="delete_group_id" value="@Model.Group.Id" />
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Wisecrack Modal -->
-<div class="modal" id="modalDeleteWisecrack">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Delete Wisecrack</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <form id="deleteWisecrackForm" asp-controller="WcC" asp-action="DeleteWisecrack" method="post">
-                <!-- Modal body -->
-                <input type="hidden" id="delete_wc_id" name="delete_wc_id" />
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="col-form-label">Are you sure you want to delete this wisecrack?</label>
                     </div>
                 </div>
 
@@ -164,97 +151,4 @@
     </div>
 </div>
 
-<!-- Edit Wisecrack Modal -->
-<div class="modal" id="modalEditWisecrack">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Edit Wisecrack</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <form id="editWisecrackForm" asp-controller="WcC" asp-action="UpdateWisecrack" method="post">
-                <!-- Modal body -->
-                <input type="hidden" name="edit_wc_id" id="edit_wc_id" value="" />
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="edit_wc_saidBy" class="col-form-label">Who said it?</label>
-                        <input type="text" name="edit_wc_saidBy" class="form-control" id="edit_wc_saidBy" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit_wc_content" class="col-form-label">Wisecrack:</label>
-                        <input type="text" name="edit_wc_content" class="form-control" id="edit_wc_content" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit_wc_date" class="col-form-label">Date:</label>
-                        <input type="date" placeholder="yyyy-mm-dd" min="2000-01-01" max="2099-12-31" class="form-control" name="edit_wc_date" id="edit_wc_date">
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Save" />
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<h3 class="list-title">WiseCrack List</h3>
-
-
-<!-- List -->
-@{
-    string GetNewSortOrder(WisecrackListSortBy sortBy)
-    {
-        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "Descending" : "Ascending") : "Ascending";
-    }
-    string GetSortIconCssClass(WisecrackListSortBy sortBy)
-    {
-        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "fas fa-sort-up" : "fas fa-sort-down") : "";
-    }
-
-    WisecrackListSortBy[] headers = { WisecrackListSortBy.Author, WisecrackListSortBy.Content, WisecrackListSortBy.Views, WisecrackListSortBy.Date };
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            @foreach (WisecrackListSortBy header in headers)
-            {
-                <th>
-                    <a class="text-dark" asp-controller="WcC" asp-action="Group" asp-route-SortBy="@header.ToString()" asp-route-SortOrder="@GetNewSortOrder(header)">
-                        @header.ToString()
-                        <i class="@GetSortIconCssClass(header)"></i>
-                    </a>
-                </th>
-            }
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var wisecrack in Model.Group.Wisecracks)
-        {
-            <tr>
-                <td>@wisecrack.SaidBy</td>
-                <td>@wisecrack.Content</td>
-                <td>@wisecrack.Views</td>
-                <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
-                <td class="text-end">
-                    @{
-                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
-                    }
-                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditWisecrack" onclick="SetWisecrackEditorData('@wisecrack.Id', '@wisecrack.SaidBy', '@wisecrack.Content', '@addedAt');">
-                        Edit
-                    </button>
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteWisecrack" onclick="SetWisecrackDeleteID('@wisecrack.Id')">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<partial name="WisecrackListModule" />
