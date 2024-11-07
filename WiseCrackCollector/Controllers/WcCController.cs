@@ -31,6 +31,19 @@ namespace WiseCrackCollector.Controllers
             return claim.Value;
         }
 
+        private bool CheckPermission(string userId, Group group, UserGroupPermissionType permission, out UserGroupPermissionSet userGroupPermissionSet)
+        {
+
+            if (group.Owner.Id.Equals(userId))
+            {
+                userGroupPermissionSet = new UserGroupPermissionSet() { Read = true, Update = true, Delete = true, Add = true };
+                return true;
+            }
+
+            userGroupPermissionSet = wccService.GetUserGroupPermissions(userId, group.Id);
+            return userGroupPermissionSet != null && userGroupPermissionSet.CheckPermission(permission);
+        }
+
         [Authorize]
         public IActionResult Index() 
         {
@@ -71,8 +84,9 @@ namespace WiseCrackCollector.Controllers
             if (group == null)
                 return NotFound();
 
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, delete_group_id);
-            if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Delete))
+            // Check permission
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
 
             wccService.DeleteGroup(delete_group_id);
@@ -90,8 +104,9 @@ namespace WiseCrackCollector.Controllers
             if (group == null)
                 return NotFound();
 
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, edit_group_id);
-            if (!group.Owner.Id.Equals(userId) && (userGroupPermission == null || !userGroupPermission.Update))
+            // Check permission
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, group, UserGroupPermissionType.Update, out userGroupPermissionSet))
                 return Forbid();
 
             wccService.EditGroup(edit_group_id, edit_group_name);
@@ -110,28 +125,16 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check permission
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, groupId);
-
-            if(userGroupPermission == null && group.Owner.Id.Equals(userId))
-            {
-                userGroupPermission = new UserGroupPermissionSet()
-                {
-                    Read = true,
-                    Add = true,
-                    Update = true,
-                    Delete = true
-                };
-            }
-            else if (userGroupPermission == null || !userGroupPermission.Read)
-            {
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, group, UserGroupPermissionType.Read, out userGroupPermissionSet))
                 return Forbid();
-            }
+            
 
             // Create view model
             GroupViewModel groupViewModel = new GroupViewModel()
             {
                 Group = group,
-                Permissions = userGroupPermission,
+                Permissions = userGroupPermissionSet,
                 SortBy = WisecrackListSortBy.Date,
                 SortOrder = WisecrackListSortOrder.Descending
             };
@@ -154,22 +157,9 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check permission
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, new_wc_group_id);
-
-            if (userGroupPermission == null && group.Owner.Id.Equals(userId))
-            {
-                userGroupPermission = new UserGroupPermissionSet()
-                {
-                    Read = true,
-                    Add = true,
-                    Update = true,
-                    Delete = true
-                };
-            }
-            else if (userGroupPermission == null || !userGroupPermission.Add)
-            {
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, group, UserGroupPermissionType.Add, out userGroupPermissionSet))
                 return Forbid();
-            }
 
             Wisecrack newWisecrack = new Wisecrack() { 
                 Content = new_wc_content,
@@ -193,22 +183,9 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check permission
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, wisecrack.Group.Id);
-
-            if (userGroupPermission == null && wisecrack.Group.Owner.Id.Equals(userId))
-            {
-                userGroupPermission = new UserGroupPermissionSet()
-                {
-                    Read = true,
-                    Add = true,
-                    Update = true,
-                    Delete = true
-                };
-            }
-            else if (userGroupPermission == null || !userGroupPermission.Delete)
-            {
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, wisecrack.Group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
-            }
 
             wccService.DeleteWisecrack(wisecrack);
 
@@ -227,22 +204,9 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check permission
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, empty_group_id);
-
-            if (userGroupPermission == null && group.Owner.Id.Equals(userId))
-            {
-                userGroupPermission = new UserGroupPermissionSet()
-                {
-                    Read = true,
-                    Add = true,
-                    Update = true,
-                    Delete = true
-                };
-            }
-            else if (userGroupPermission == null || !userGroupPermission.Delete)
-            {
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
-            }
 
             wccService.EmptyGroup(empty_group_id);
 
@@ -261,24 +225,11 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check permission
-            UserGroupPermissionSet? userGroupPermission = wccService.GetUserGroupPermissions(userId, wisecrack.Group.Id);
-
-            if (userGroupPermission == null && wisecrack.Group.Owner.Id.Equals(userId))
-            {
-                userGroupPermission = new UserGroupPermissionSet()
-                {
-                    Read = true,
-                    Add = true,
-                    Update = true,
-                    Delete = true
-                };
-            }
-            else if (userGroupPermission == null || !userGroupPermission.Update)
-            {
+            UserGroupPermissionSet userGroupPermissionSet;
+            if (!CheckPermission(userId, wisecrack.Group, UserGroupPermissionType.Update, out userGroupPermissionSet))
                 return Forbid();
-            }
 
-            if(string.IsNullOrEmpty(edit_wc_content))
+            if (string.IsNullOrEmpty(edit_wc_content))
                 return BadRequest();
             if (string.IsNullOrEmpty(edit_wc_saidBy))
                 edit_wc_saidBy = "unknown";
