@@ -44,7 +44,7 @@ namespace WiseCrackCollector.Controllers
 
             wccService.AddWisecrack(newWisecrack, new_wc_group_id, userId);
 
-            return RedirectToAction("Details", new { groupId = new_wc_group_id });
+            return RedirectToAction("Details", "Groups", new { groupId = new_wc_group_id });
         }
 
         [Authorize]
@@ -66,7 +66,7 @@ namespace WiseCrackCollector.Controllers
 
             wccService.DeleteWisecrack(wisecrack);
 
-            return RedirectToAction("Details", new { groupId = wisecrack.Group.Id });
+            return RedirectToAction("Details", "Groups", new { groupId = wisecrack.Group.Id });
         }
 
         [Authorize]
@@ -93,7 +93,7 @@ namespace WiseCrackCollector.Controllers
 
             wccService.UpdateWisecrack(edit_wc_id, edit_wc_content, edit_wc_saidBy, edit_wc_date);
 
-            return RedirectToAction("Details", new { groupId = wisecrack.Group.Id });
+            return RedirectToAction("Details", "Groups", new { groupId = wisecrack.Group.Id });
         }
     }
 }

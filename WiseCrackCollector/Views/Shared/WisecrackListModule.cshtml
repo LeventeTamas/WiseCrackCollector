@@ -108,12 +108,9 @@
                 <td>@wisecrack.Views</td>
                 <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
                 <td class="text-end">
-                    @{
-                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
-                    }
-
                     @if (Model.Permissions.Update)
                     {
+                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
                         <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditWisecrack" onclick="SetWisecrackEditorData('@wisecrack.Id', '@wisecrack.SaidBy', '@wisecrack.Content', '@addedAt');">
                             Edit
                         </button>

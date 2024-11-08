@@ -83,7 +83,7 @@ namespace WiseCrackCollector.Controllers
 
             wccService.EmptyGroup(empty_group_id);
 
-            return RedirectToAction("Group", new { groupId = empty_group_id });
+            return RedirectToAction("Details", new { groupId = empty_group_id });
         }
 
         [Authorize]
