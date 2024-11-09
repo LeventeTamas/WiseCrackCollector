@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WiseCrackCollector.Models
@@ -18,8 +19,14 @@ namespace WiseCrackCollector.Models
         [Required]
         public string UserId { get; set; }
 
+        [ForeignKey("UserId")]
+        public AppUser User { get; set; }
+
         [Required]
         public string GroupId { get; set; }
+
+        [ForeignKey("GroupId")]
+        public Group Group { get; set; }
 
         [Required]
         public bool Read { get; set; } = false;

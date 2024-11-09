@@ -19,6 +19,8 @@ namespace WiseCrackCollector.Models
         public List<Wisecrack> Wisecracks = new List<Wisecrack>();
 
         [Required, ForeignKey("OwnerId")]
-        public IdentityUser Owner { get; set; }
+        public AppUser Owner { get; set; }
+
+        public List<UserGroupPermissionSet> userGroupPermissionSets;
     }
 }

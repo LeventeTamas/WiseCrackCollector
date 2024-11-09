@@ -69,33 +69,13 @@
 
 <h3 class="list-title">WiseCrack List</h3>
 
-
-<!-- List -->
-@{
-    string GetNewSortOrder(WisecrackListSortBy sortBy)
-    {
-        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "Descending" : "Ascending") : "Ascending";
-    }
-    string GetSortIconCssClass(WisecrackListSortBy sortBy)
-    {
-        return Model.SortBy == sortBy ? (Model.SortOrder == WisecrackListSortOrder.Ascending ? "fas fa-sort-up" : "fas fa-sort-down") : "";
-    }
-
-    WisecrackListSortBy[] headers = { WisecrackListSortBy.Author, WisecrackListSortBy.Content, WisecrackListSortBy.Views, WisecrackListSortBy.Date };
-}
-
 <table class="table">
     <thead>
-        <tr>
-            @foreach (WisecrackListSortBy header in headers)
-            {
-                <th>
-                    <a class="text-dark" asp-route-SortBy="@header.ToString()" asp-route-SortOrder="@GetNewSortOrder(header)">
-                        @header.ToString()
-                        <i class="@GetSortIconCssClass(header)"></i>
-                    </a>
-                </th>
-            }
+        <tr>  
+            <th>Said By</th>
+            <th>Wisecrack</th>
+            <th>Views</th>
+            <th>Created At</th>
             <th></th>
         </tr>
     </thead>

@@ -56,7 +56,7 @@ namespace WiseCrackCollector.Services
 
         public string CreateGroup(string userId, string groupName)
         {
-            IdentityUser user = dbContext.Users.First(u => u.Id.Equals(userId));
+            AppUser user = dbContext.AppUsers.First(u => u.Id.Equals(userId));
 
             Group newGroup = new Group()
             {
@@ -76,7 +76,7 @@ namespace WiseCrackCollector.Services
 
         public UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId)
         {
-            return dbContext.UserGroupPermissions.FirstOrDefault(p => p.UserId.Equals(userId) && p.GroupId.Equals(groupId));
+            return dbContext.UserGroupPermissions.FirstOrDefault(p => p.User.Id.Equals(userId) && p.Group.Id.Equals(groupId));
         }
 
         public void DeleteGroup(string groupId)
@@ -95,7 +95,7 @@ namespace WiseCrackCollector.Services
 
         public void AddWisecrack(Wisecrack newWisecrack, string groupId, string userId)
         {
-            IdentityUser user = dbContext.Users.First(u => u.Id.Equals(userId));
+            AppUser user = dbContext.AppUsers.First(u => u.Id.Equals(userId));
             Group group = dbContext.Groups.First(g => g.Id.Equals(groupId));
 
             newWisecrack.Owner = user;

@@ -39,7 +39,7 @@
         }
         @if (Model.Permissions.ManageMembers)
         {
-            <form asp-controller="Members" asp-route-groupId="@Model.Group.Id" style="display: inline;">
+            <form asp-controller="Members" asp-action="Manage" asp-route-groupId="@Model.Group.Id" style="display: inline;">
                 <button type="submit" class="btn btn-outline-dark">
                     Members
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -48,7 +48,6 @@
                 </button>
             </form>
         }
-
     </div>
 </div>
 

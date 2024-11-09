@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WiseCrackCollector.Data;
 using Microsoft.AspNetCore.Identity;
 using WiseCrackCollector.Services;
+using WiseCrackCollector.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddDefaultIdentity<AppUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
     }).AddEntityFrameworkStores<ApplicationDbContext>();
 

@@ -23,7 +23,7 @@ namespace WiseCrackCollector.Models
         public int Views { get; set; } = 0;
 
         [Required, ForeignKey("OwnerId")]
-        public IdentityUser Owner { get; set; }
+        public AppUser Owner { get; set; }
 
         [ForeignKey("GroupId")]
         public Group Group { get; set; }

@@ -1,0 +1,33 @@
+﻿<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wisecrack in Model.Wisecracks)
+        {
+            <tr>
+                <td>@wisecrack.SaidBy</td>
+                <td>@wisecrack.Content</td>
+                <td>@wisecrack.Views</td>
+                <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
+                <td class="text-end">
+                    @if (Model.Permissions.Update)
+                    {
+                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
+                        <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditWisecrack" onclick="SetWisecrackEditorData('@wisecrack.Id', '@wisecrack.SaidBy', '@wisecrack.Content', '@addedAt');">
+                            Edit
+                        </button>
+                    }
+                    @if (Model.Permissions.Delete)
+                    {
+                        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteWisecrack" onclick="SetWisecrackDeleteID('@wisecrack.Id')">
+                            Delete
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
