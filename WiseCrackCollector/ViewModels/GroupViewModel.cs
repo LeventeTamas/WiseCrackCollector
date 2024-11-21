@@ -1,4 +1,6 @@
-﻿namespace WiseCrackCollector.Models
+﻿using WiseCrackCollector.Models;
+
+namespace WiseCrackCollector.ViewModels
 {
     public enum WisecrackListSortBy
     {

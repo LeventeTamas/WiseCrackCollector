@@ -7,11 +7,13 @@ namespace WiseCrackCollector.Controllers
 {
     public class WisecracksController : Controller
     {
-        private IWcCService wccService;
+        private IWisecrackService wisecrackService;
+        private IGroupService groupService;
 
-        public WisecracksController(IWcCService _wccService)
+        public WisecracksController(IWisecrackService _wisecrackService, IGroupService _groupService)
         {
-            wccService = _wccService;
+            wisecrackService = _wisecrackService;
+            groupService = _groupService;
         }
 
         public IActionResult Index()
@@ -24,16 +26,13 @@ namespace WiseCrackCollector.Controllers
         [Route("/Wisecracks/Add")]
         public IActionResult Add(string new_wc_group_id, string new_wc_content, string? new_wc_saidBy)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(new_wc_group_id);
-            if (group == null)
+            // check if group exists
+            if (!groupService.IsGroupExists(new_wc_group_id))
                 return NotFound();
 
-            // Check permission
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, group, UserGroupPermissionType.Add, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(new_wc_group_id, UserGroupPermissionType.Add, out userGroupPermissionSet))
                 return Forbid();
 
             Wisecrack newWisecrack = new Wisecrack()
@@ -42,7 +41,7 @@ namespace WiseCrackCollector.Controllers
                 SaidBy = new_wc_saidBy == null ? "unknown" : new_wc_saidBy
             };
 
-            wccService.AddWisecrack(newWisecrack, new_wc_group_id, userId);
+            wisecrackService.AddWisecrack(new_wc_group_id, newWisecrack);
 
             return RedirectToAction("Details", "Groups", new { groupId = new_wc_group_id });
         }
@@ -52,19 +51,18 @@ namespace WiseCrackCollector.Controllers
         [Route("/Wisecracks/Delete")]
         public IActionResult Delete(string delete_wc_id)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Wisecrack? wisecrack = wccService.GetWisecrackById(delete_wc_id);
-            if (wisecrack == null)
+            // check if wisecrack exists
+            if (!wisecrackService.IsWisecrackExists(delete_wc_id))
                 return NotFound();
 
-            // Check permission
+            Wisecrack wisecrack = wisecrackService.GetWisecrackById(delete_wc_id);
+
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, wisecrack.Group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
 
-            wccService.DeleteWisecrack(wisecrack);
+            wisecrackService.DeleteWisecrack(wisecrack);
 
             return RedirectToAction("Details", "Groups", new { groupId = wisecrack.Group.Id });
         }
@@ -74,24 +72,28 @@ namespace WiseCrackCollector.Controllers
         [Route("/Wisecracks/Update")]
         public IActionResult Update(string edit_wc_id, string edit_wc_saidBy, string edit_wc_content, string edit_wc_date)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Wisecrack? wisecrack = wccService.GetWisecrackById(edit_wc_id);
-            if (wisecrack == null)
+            // check if wisecrack exists
+            if (!wisecrackService.IsWisecrackExists(edit_wc_id))
                 return NotFound();
 
-            // Check permission
+            Wisecrack wisecrack = wisecrackService.GetWisecrackById(edit_wc_id);
+
+            // check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, wisecrack.Group, UserGroupPermissionType.Update, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, UserGroupPermissionType.Update, out userGroupPermissionSet))
                 return Forbid();
 
             if (string.IsNullOrEmpty(edit_wc_content))
                 return BadRequest();
             if (string.IsNullOrEmpty(edit_wc_saidBy))
                 edit_wc_saidBy = "unknown";
+            
 
-            wccService.UpdateWisecrack(edit_wc_id, edit_wc_content, edit_wc_saidBy, edit_wc_date);
+            wisecrack.Content = edit_wc_content;
+            wisecrack.CreatedAt = DateTime.Parse(edit_wc_date);
+            wisecrack.SaidBy = edit_wc_saidBy;
+
+            wisecrackService.UpdateWisecrack(wisecrack);
 
             return RedirectToAction("Details", "Groups", new { groupId = wisecrack.Group.Id });
         }

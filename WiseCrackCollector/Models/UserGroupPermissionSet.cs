@@ -48,9 +48,9 @@ namespace WiseCrackCollector.Models
             switch (permissionType)
             {
                 case UserGroupPermissionType.Read:
-                    return Read;  
+                    return Read;
                 case UserGroupPermissionType.Add:
-                    return Add;   
+                    return Add;
                 case UserGroupPermissionType.Update:
                     return Update;
                 case UserGroupPermissionType.Delete:

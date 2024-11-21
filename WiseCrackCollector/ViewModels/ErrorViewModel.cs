@@ -1,4 +1,4 @@
-namespace WiseCrackCollector.Models
+namespace WiseCrackCollector.ViewModels
 {
     public class ErrorViewModel
     {

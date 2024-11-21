@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using WiseCrackCollector.Models;
 using WiseCrackCollector.Services;
+using WiseCrackCollector.ViewModels;
 
 namespace WiseCrackCollector.Controllers
 {
     public class GroupsController : Controller
     {
-        private IWcCService wccService;
+        private IGroupService groupService;
+        private IWisecrackService wisecrackService;
 
-        public GroupsController(IWcCService _wccService)
+        public GroupsController(IGroupService _groupService, IWisecrackService _wisecrackService)
         {
-            wccService = _wccService;
+            groupService = _groupService;
+            wisecrackService = _wisecrackService;
         }
 
         public IActionResult Index()
@@ -23,10 +26,7 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/MyGroups")]
         public IActionResult MyGroups()
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            List<Group> groups = wccService.GetGroupsOwnedByUser(userId);
+            List<Group> groups = groupService.GetGroupsOwnedByCurrentUser();
             return View(groups);
         }
 
@@ -35,10 +35,7 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/New")]
         public IActionResult New(string new_group_name)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            string newGroupId = wccService.CreateGroup(userId, new_group_name);
+            string newGroupId = groupService.CreateGroup(new_group_name);
             return RedirectToAction("Details", new { groupId = newGroupId });
         }
 
@@ -47,19 +44,18 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/Delete")]
         public IActionResult Delete(string delete_group_id)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(delete_group_id);
-            if (group == null)
+            // check if group exists
+            if (!groupService.IsGroupExists(delete_group_id))
                 return NotFound();
 
-            // Check permission
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(delete_group_id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
 
-            wccService.DeleteGroup(delete_group_id);
+            wisecrackService.DeleteWisecracksByGroupId(delete_group_id);
+            groupService.DeleteGroup(delete_group_id);
+
             return RedirectToAction("MyGroups");
         }
 
@@ -69,19 +65,16 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/Empty")]
         public IActionResult Empty(string empty_group_id)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(empty_group_id);
-            if (group == null)
+            // check if group exists
+            if (!groupService.IsGroupExists(empty_group_id))
                 return NotFound();
 
-            // Check permission
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, group, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(empty_group_id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
                 return Forbid();
 
-            wccService.EmptyGroup(empty_group_id);
+            wisecrackService.DeleteWisecracksByGroupId(empty_group_id);
 
             return RedirectToAction("Details", new { groupId = empty_group_id });
         }
@@ -91,19 +84,17 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/Update")]
         public IActionResult Update(string edit_group_id, string edit_group_name)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(edit_group_id);
-            if (group == null)
+            // check if group exists
+            if (!groupService.IsGroupExists(edit_group_id))
                 return NotFound();
 
-            // Check permission
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, group, UserGroupPermissionType.Update, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(edit_group_id, UserGroupPermissionType.Update, out userGroupPermissionSet))
                 return Forbid();
 
-            wccService.EditGroup(edit_group_id, edit_group_name);
+            groupService.EditGroup(edit_group_id, edit_group_name);
+
             return RedirectToAction("MyGroups");
         }
 
@@ -111,18 +102,16 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/{groupId}")]
         public IActionResult Details(string groupId)
         {
-            string? userId = wccService.GetCurrentUserId();
-            if (userId == null) return BadRequest();
-
-            Group? group = wccService.GetGroupById(groupId);
-            if (group == null)
+            // check if group exists
+            if (!groupService.IsGroupExists(groupId))
                 return NotFound();
 
-            // Check permission
+            // Check if the user has enough permission
             UserGroupPermissionSet userGroupPermissionSet;
-            if (!wccService.CheckPermissionOnGroup(userId, group, UserGroupPermissionType.Read, out userGroupPermissionSet))
+            if (!groupService.CheckPermissionOnGroup(groupId, UserGroupPermissionType.Read, out userGroupPermissionSet))
                 return Forbid();
 
+            Group group = groupService.GetGroupById(groupId);
 
             // Create view model
             GroupViewModel groupViewModel = new GroupViewModel()

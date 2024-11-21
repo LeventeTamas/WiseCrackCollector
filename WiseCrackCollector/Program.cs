@@ -15,7 +15,11 @@ builder.Services.AddDefaultIdentity<AppUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
     }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddScoped<IWcCService, WcCService>();
+builder.Services.AddScoped<IAppService, AppService>();
+builder.Services.AddScoped<IAppUserService, AppUserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IWisecrackService, WisecrackService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();

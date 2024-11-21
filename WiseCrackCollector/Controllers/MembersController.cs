@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WiseCrackCollector.Models;
 using WiseCrackCollector.Services;
 
 namespace WiseCrackCollector.Controllers
@@ -7,11 +8,11 @@ namespace WiseCrackCollector.Controllers
     public class MembersController : Controller
     {
 
-        private IWcCService wccService;
+        private IMemberService memberService;
 
-        public MembersController(IWcCService _wccService)
+        public MembersController(IMemberService _memberService)
         {
-            wccService = _wccService;
+            memberService = _memberService;
         }
 
         public IActionResult Index()
@@ -20,8 +21,8 @@ namespace WiseCrackCollector.Controllers
         }
 
         [Authorize]
-        [Route("/Members/Manage")]
-        public IActionResult Manage(string groupId)
+        [Route("/Members/GroupMembers")]
+        public IActionResult GroupMembers(string groupId)
         {
             return View();
         }
