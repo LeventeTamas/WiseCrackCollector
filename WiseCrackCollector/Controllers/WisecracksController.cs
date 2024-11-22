@@ -31,8 +31,8 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(new_wc_group_id, UserGroupPermissionType.Add, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(new_wc_group_id, PermissionType.Add, out membership))
                 return Forbid();
 
             Wisecrack newWisecrack = new Wisecrack()
@@ -58,8 +58,8 @@ namespace WiseCrackCollector.Controllers
             Wisecrack wisecrack = wisecrackService.GetWisecrackById(delete_wc_id);
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, PermissionType.Delete, out membership))
                 return Forbid();
 
             wisecrackService.DeleteWisecrack(wisecrack);
@@ -79,8 +79,8 @@ namespace WiseCrackCollector.Controllers
             Wisecrack wisecrack = wisecrackService.GetWisecrackById(edit_wc_id);
 
             // check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, UserGroupPermissionType.Update, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(wisecrack.Group.Id, PermissionType.Update, out membership))
                 return Forbid();
 
             if (string.IsNullOrEmpty(edit_wc_content))

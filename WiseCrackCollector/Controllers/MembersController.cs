@@ -9,10 +9,12 @@ namespace WiseCrackCollector.Controllers
     {
 
         private IMemberService memberService;
+        private IGroupService groupService;
 
-        public MembersController(IMemberService _memberService)
+        public MembersController(IMemberService _memberService, IGroupService _groupService)
         {
             memberService = _memberService;
+            groupService = _groupService;
         }
 
         public IActionResult Index()
@@ -24,7 +26,18 @@ namespace WiseCrackCollector.Controllers
         [Route("/Members/GroupMembers")]
         public IActionResult GroupMembers(string groupId)
         {
-            return View();
+            // check if group exists
+            if (!groupService.IsGroupExists(groupId))
+                return NotFound();
+
+            // Check if the user has enough permission
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(groupId, PermissionType.ManageMembers, out membership))
+                return Forbid();
+
+            Group group = groupService.GetGroupById(groupId);
+
+            return View(group);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WiseCrackCollector.Models
 {
-    public enum UserGroupPermissionType
+    public enum PermissionType
     {
         Read,
         Add,
@@ -13,8 +13,7 @@ namespace WiseCrackCollector.Models
         ManageMembers
     }
 
-    [Table("UserGroupPermissions")]
-    public class UserGroupPermissionSet
+    public class GroupUserMembership
     {
         [Required]
         public string UserId { get; set; }
@@ -43,19 +42,19 @@ namespace WiseCrackCollector.Models
         [Required]
         public bool ManageMembers { get; set; } = false;
 
-        public bool CheckPermission(UserGroupPermissionType permissionType)
+        public bool CheckPermission(PermissionType permissionType)
         {
             switch (permissionType)
             {
-                case UserGroupPermissionType.Read:
+                case PermissionType.Read:
                     return Read;
-                case UserGroupPermissionType.Add:
+                case PermissionType.Add:
                     return Add;
-                case UserGroupPermissionType.Update:
+                case PermissionType.Update:
                     return Update;
-                case UserGroupPermissionType.Delete:
+                case PermissionType.Delete:
                     return Delete;
-                case UserGroupPermissionType.ManageMembers:
+                case PermissionType.ManageMembers:
                     return ManageMembers;
                 default:
                     return false;

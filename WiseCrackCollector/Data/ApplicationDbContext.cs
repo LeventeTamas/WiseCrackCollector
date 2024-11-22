@@ -38,20 +38,20 @@ namespace WiseCrackCollector.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Group>()
-                .HasMany(g => g.userGroupPermissionSets)
+                .HasMany(g => g.Memberships)
                 .WithOne(p => p.Group)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<AppUser>()
                 .HasMany(u => u.PermissionSets)
                 .WithOne(p => p.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<UserGroupPermissionSet>().HasKey(p => new { p.UserId, p.GroupId });
+            builder.Entity<GroupUserMembership>().HasKey(p => new { p.UserId, p.GroupId });
         }
 
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Wisecrack> Wisecracks { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<UserGroupPermissionSet> UserGroupPermissions { get; set; }
+        public DbSet<GroupUserMembership> GroupUserMemberships { get; set; }
     }
 }

@@ -4,8 +4,8 @@ namespace WiseCrackCollector.Services
 {
     public interface IGroupService
     {
-        bool CheckPermissionOnGroup(string groupId, UserGroupPermissionType permission, out UserGroupPermissionSet userGroupPermissionSet);
-        UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId);
+        bool CheckPermissionOnGroup(string groupId, PermissionType permission, out GroupUserMembership membership);
+        GroupUserMembership? GetMembership(string userId, string groupId);
         List<Group> GetGroupsOwnedByCurrentUser();
         string CreateGroup(string groupName);
         Group GetGroupById(string groupId);

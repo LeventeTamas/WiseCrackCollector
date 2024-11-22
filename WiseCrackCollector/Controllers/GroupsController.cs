@@ -49,8 +49,8 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(delete_group_id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(delete_group_id, PermissionType.Delete, out membership))
                 return Forbid();
 
             wisecrackService.DeleteWisecracksByGroupId(delete_group_id);
@@ -70,8 +70,8 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(empty_group_id, UserGroupPermissionType.Delete, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(empty_group_id, PermissionType.Delete, out membership))
                 return Forbid();
 
             wisecrackService.DeleteWisecracksByGroupId(empty_group_id);
@@ -89,8 +89,8 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(edit_group_id, UserGroupPermissionType.Update, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(edit_group_id, PermissionType.Update, out membership))
                 return Forbid();
 
             groupService.EditGroup(edit_group_id, edit_group_name);
@@ -107,8 +107,8 @@ namespace WiseCrackCollector.Controllers
                 return NotFound();
 
             // Check if the user has enough permission
-            UserGroupPermissionSet userGroupPermissionSet;
-            if (!groupService.CheckPermissionOnGroup(groupId, UserGroupPermissionType.Read, out userGroupPermissionSet))
+            GroupUserMembership membership;
+            if (!groupService.CheckPermissionOnGroup(groupId, PermissionType.Read, out membership))
                 return Forbid();
 
             Group group = groupService.GetGroupById(groupId);
@@ -118,7 +118,7 @@ namespace WiseCrackCollector.Controllers
             {
                 Group = group,
                 Wisecracks = group.Wisecracks,
-                Permissions = userGroupPermissionSet,
+                Permissions = membership,
                 SortBy = WisecrackListSortBy.Date,
                 SortOrder = WisecrackListSortOrder.Descending
             };

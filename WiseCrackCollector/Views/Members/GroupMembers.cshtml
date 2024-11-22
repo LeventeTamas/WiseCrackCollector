@@ -1,11 +1,17 @@
-﻿<table class="table">
+﻿@model Group
+
+<h1>Members of group: @Model.Name</h1>
+
+<h3 class="list-title">Member List</h3>
+<table class="table">
     <thead>
         <tr>
+            <th>Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var wisecrack in Model.Wisecracks)
+        @foreach (var membership in Model.Memberships)
         {
             <tr>
                 <td>@wisecrack.SaidBy</td>

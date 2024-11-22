@@ -4,6 +4,6 @@ namespace WiseCrackCollector.Models
 {
     public class AppUser : IdentityUser
     {
-        public List<UserGroupPermissionSet> PermissionSets { get; set; }
+        public List<GroupUserMembership> PermissionSets { get; set; }
     }
 }

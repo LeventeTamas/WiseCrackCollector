@@ -21,6 +21,6 @@ namespace WiseCrackCollector.Models
         [Required, ForeignKey("OwnerId")]
         public AppUser Owner { get; set; }
 
-        public List<UserGroupPermissionSet> userGroupPermissionSets;
+        public List<GroupUserMembership> Memberships;
     }
 }

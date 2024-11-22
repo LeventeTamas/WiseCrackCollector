@@ -20,18 +20,28 @@ namespace WiseCrackCollector.Services
             return dbContext.Groups.Any(g => g.Id.Equals(groupId));
         }
 
-        public bool CheckPermissionOnGroup(string groupId, UserGroupPermissionType permission, out UserGroupPermissionSet userGroupPermissionSet)
+        public bool CheckPermissionOnGroup(string groupId, PermissionType permission, out GroupUserMembership membership)
         {
-            string userId = appUserService.GetCurrentUser().Id;
+            AppUser user = appUserService.GetCurrentUser();
             Group group = GetGroupById(groupId);
-            if (group.Owner.Id.Equals(userId))
+            if (group.Owner.Id.Equals(user.Id))
             {
-                userGroupPermissionSet = new UserGroupPermissionSet() { Read = true, Update = true, Delete = true, Add = true, ManageMembers = true };
+                membership = new GroupUserMembership() { 
+                    UserId = user.Id, 
+                    User = user, 
+                    GroupId = group.Id, 
+                    Group = group, 
+                    Read = true, 
+                    Update = true, 
+                    Delete = true, 
+                    Add = true, 
+                    ManageMembers = true 
+                };
                 return true;
             }
 
-            userGroupPermissionSet = GetUserGroupPermissions(userId, group.Id);
-            return userGroupPermissionSet != null && userGroupPermissionSet.CheckPermission(permission);
+            membership = GetMembership(user.Id, group.Id);
+            return membership != null && membership.CheckPermission(permission);
         }
 
         public string CreateGroup(string groupName)
@@ -63,7 +73,7 @@ namespace WiseCrackCollector.Services
 
         public Group GetGroupById(string groupId)
         {
-            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).First(g => g.Id.Equals(groupId));
+            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).Include(g => g.Memberships).First(g => g.Id.Equals(groupId));
         }
 
         public List<Group> GetGroupsOwnedByCurrentUser()
@@ -76,9 +86,9 @@ namespace WiseCrackCollector.Services
                 .ToList();
         }
 
-        public UserGroupPermissionSet? GetUserGroupPermissions(string userId, string groupId)
+        public GroupUserMembership? GetMembership(string userId, string groupId)
         {
-            return dbContext.UserGroupPermissions.FirstOrDefault(p => p.User.Id.Equals(userId) && p.Group.Id.Equals(groupId));
+            return dbContext.GroupUserMemberships.FirstOrDefault(p => p.User.Id.Equals(userId) && p.Group.Id.Equals(groupId));
         }
     }
 }
