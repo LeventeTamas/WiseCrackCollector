@@ -73,7 +73,7 @@ namespace WiseCrackCollector.Services
 
         public Group GetGroupById(string groupId)
         {
-            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).Include(g => g.Memberships).First(g => g.Id.Equals(groupId));
+            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).First(g => g.Id.Equals(groupId));
         }
 
         public List<Group> GetGroupsOwnedByCurrentUser()

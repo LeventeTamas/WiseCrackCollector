@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WiseCrackCollector.Models;
 using WiseCrackCollector.Services;
+using WiseCrackCollector.ViewModels;
 
 namespace WiseCrackCollector.Controllers
 {
@@ -36,8 +37,15 @@ namespace WiseCrackCollector.Controllers
                 return Forbid();
 
             Group group = groupService.GetGroupById(groupId);
+            List<GroupUserMembership> memberships = memberService.GetMembershipsByGroupId(groupId);
 
-            return View(group);
+            GroupMembersViewModel groupMembersViewModel = new GroupMembersViewModel()
+            {
+                Group = group,
+                Memberships = memberships
+            };
+
+            return View(groupMembersViewModel);
         }
     }
 }

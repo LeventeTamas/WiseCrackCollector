@@ -13,6 +13,7 @@ namespace WiseCrackCollector.Models
         ManageMembers
     }
 
+    [Table("GroupUserMemberships")]
     public class GroupUserMembership
     {
         [Required]

@@ -1,12 +1,18 @@
-﻿@model Group
+﻿@model GroupMembersViewModel
 
-<h1>Members of group: @Model.Name</h1>
+<h1>Members of group: @Model.Group.Name</h1>
 
 <h3 class="list-title">Member List</h3>
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
+            <th>Joined At</th>
+            <th>Read</th>
+            <th>Add</th>
+            <th>Update</th>
+            <th>Delete</th>
+            <th>Manage Members</th>
             <th></th>
         </tr>
     </thead>
@@ -14,24 +20,15 @@
         @foreach (var membership in Model.Memberships)
         {
             <tr>
-                <td>@wisecrack.SaidBy</td>
-                <td>@wisecrack.Content</td>
-                <td>@wisecrack.Views</td>
-                <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
+                <td>@membership</td>
+                <td></td>
+                <td>@membership.Read</td>
+                <td>@membership.Add</td>
+                <td>@membership.Update</td>
+                <td>@membership.Delete</td>
+                <td>@membership.ManageMembers</td>
                 <td class="text-end">
-                    @if (Model.Permissions.Update)
-                    {
-                        string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");
-                        <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditWisecrack" onclick="SetWisecrackEditorData('@wisecrack.Id', '@wisecrack.SaidBy', '@wisecrack.Content', '@addedAt');">
-                            Edit
-                        </button>
-                    }
-                    @if (Model.Permissions.Delete)
-                    {
-                        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteWisecrack" onclick="SetWisecrackDeleteID('@wisecrack.Id')">
-                            Delete
-                        </button>
-                    }
+                    
                 </td>
             </tr>
         }
