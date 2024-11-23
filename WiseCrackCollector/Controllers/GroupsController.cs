@@ -10,11 +10,15 @@ namespace WiseCrackCollector.Controllers
     {
         private IGroupService groupService;
         private IWisecrackService wisecrackService;
+        private IMemberService memberService;
+        private IAppUserService appUserService;
 
-        public GroupsController(IGroupService _groupService, IWisecrackService _wisecrackService)
+        public GroupsController(IGroupService _groupService, IWisecrackService _wisecrackService, IMemberService _memberService, IAppUserService _appUserService)
         {
             groupService = _groupService;
             wisecrackService = _wisecrackService;
+            memberService = _memberService;
+            appUserService = _appUserService;
         }
 
         public IActionResult Index()
@@ -36,6 +40,16 @@ namespace WiseCrackCollector.Controllers
         public IActionResult New(string new_group_name)
         {
             string newGroupId = groupService.CreateGroup(new_group_name);
+            string userId = appUserService.GetCurrentUser().Id;
+            GroupUserMembership groupUserMembership = new GroupUserMembership(userId, newGroupId)
+            {
+                Read = true,
+                Add = true,
+                Update = true,
+                Delete = true,
+                ManageMembers = true
+            };
+            memberService.AddMember(groupUserMembership);
             return RedirectToAction("Details", new { groupId = newGroupId });
         }
 

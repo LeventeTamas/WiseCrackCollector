@@ -6,5 +6,6 @@ namespace WiseCrackCollector.Services
     {
         AppUser GetCurrentUser();
         AppUser GetAppUserById(string appId);
+        List<AppUser> GetAppUsers();
     }
 }

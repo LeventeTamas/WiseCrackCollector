@@ -26,10 +26,8 @@ namespace WiseCrackCollector.Services
             Group group = GetGroupById(groupId);
             if (group.Owner.Id.Equals(user.Id))
             {
-                membership = new GroupUserMembership() { 
-                    UserId = user.Id, 
+                membership = new GroupUserMembership(user.Id, group.Id) {
                     User = user, 
-                    GroupId = group.Id, 
                     Group = group, 
                     Read = true, 
                     Update = true, 

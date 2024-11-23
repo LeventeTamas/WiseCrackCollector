@@ -26,5 +26,10 @@ namespace WiseCrackCollector.Services
         {
             return dbContext.AppUsers.First(u => u.Id.Equals(userId));
         }
+
+        public List<AppUser> GetAppUsers()
+        {
+            return dbContext.AppUsers.ToList();
+        }
     }
 }

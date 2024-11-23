@@ -16,6 +16,12 @@ namespace WiseCrackCollector.Models
     [Table("GroupUserMemberships")]
     public class GroupUserMembership
     {
+        public GroupUserMembership(string userId, string groupId)
+        {
+            UserId = userId;
+            GroupId = groupId;
+        }
+
         [Required]
         public string UserId { get; set; }
 

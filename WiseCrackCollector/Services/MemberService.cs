@@ -12,6 +12,12 @@ namespace WiseCrackCollector.Services
             dbContext = _dbContext;
         }
 
+        public void AddMember(GroupUserMembership membership)
+        {
+            dbContext.GroupUserMemberships.Add(membership);
+            dbContext.SaveChanges();
+        }
+
         public List<GroupUserMembership> GetMembershipsByGroupId(string groupId)
         {
             return dbContext.GroupUserMemberships.Include(m => m.User).Where(m => m.GroupId.Equals(groupId)).ToList();
