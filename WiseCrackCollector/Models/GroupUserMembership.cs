@@ -49,6 +49,9 @@ namespace WiseCrackCollector.Models
         [Required]
         public bool ManageMembers { get; set; } = false;
 
+        [Required]
+        public DateTime JoinedAt { get; set; } = DateTime.Now;
+
         public bool CheckPermission(PermissionType permissionType)
         {
             switch (permissionType)
