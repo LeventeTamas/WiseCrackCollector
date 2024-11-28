@@ -65,13 +65,17 @@ namespace WiseCrackCollector.Services
 
         public void EditGroup(string groupId, string groupName)
         {
-            dbContext.Groups.Where(g => g.Id.Equals(groupId))
+            dbContext.Groups
+                .Where(g => g.Id.Equals(groupId))
                 .ExecuteUpdate(g => g.SetProperty(n => n.Name, groupName));
         }
 
         public Group GetGroupById(string groupId)
         {
-            return dbContext.Groups.Include(g => g.Owner).Include(g => g.Wisecracks).First(g => g.Id.Equals(groupId));
+            return dbContext.Groups
+                .Include(g => g.Owner)
+                .Include(g => g.Wisecracks)
+                .First(g => g.Id.Equals(groupId));
         }
 
         public List<Group> GetGroupsOwnedByCurrentUser()
@@ -87,6 +91,18 @@ namespace WiseCrackCollector.Services
         public GroupUserMembership? GetMembership(string userId, string groupId)
         {
             return dbContext.GroupUserMemberships.FirstOrDefault(p => p.User.Id.Equals(userId) && p.Group.Id.Equals(groupId));
+        }
+
+        public List<Group> GetGroupsConnectedToCurrentUser()
+        {
+            string userId = appUserService.GetCurrentUser().Id;
+            return dbContext.GroupUserMemberships
+                .Include(m => m.Group)
+                .Include(m => m.Group.Wisecracks)
+                .Include (m => m.Group.Owner)
+                .Where(m => m.UserId.Equals(userId))
+                .Select(m => m.Group)
+                .ToList();
         }
     }
 }

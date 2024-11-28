@@ -35,6 +35,14 @@ namespace WiseCrackCollector.Controllers
         }
 
         [Authorize]
+        [Route("/Groups/MyMemberships")]
+        public IActionResult MyMemberships()
+        {
+            List<Group> groups = groupService.GetGroupsConnectedToCurrentUser();
+            return View(groups);
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("/Groups/New")]
         public IActionResult New(string new_group_name)

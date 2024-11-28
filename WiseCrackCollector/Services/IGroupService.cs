@@ -12,5 +12,6 @@ namespace WiseCrackCollector.Services
         void DeleteGroup(string groupId);
         void EditGroup(string groupId, string groupName);
         bool IsGroupExists(string groupId);
+        List<Group> GetGroupsConnectedToCurrentUser();
     }
 }
