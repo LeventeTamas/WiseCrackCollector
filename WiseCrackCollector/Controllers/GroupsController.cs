@@ -31,6 +31,7 @@ namespace WiseCrackCollector.Controllers
         public IActionResult MyGroups()
         {
             List<Group> groups = groupService.GetGroupsOwnedByCurrentUser();
+            Response.Cookies.Append("redirectTo", "MyGroups");
             return View(groups);
         }
 
@@ -39,6 +40,7 @@ namespace WiseCrackCollector.Controllers
         public IActionResult MyMemberships()
         {
             List<Group> groups = groupService.GetGroupsConnectedToCurrentUser();
+            Response.Cookies.Append("redirectTo", "MyMemberships");
             return View(groups);
         }
 
@@ -124,6 +126,10 @@ namespace WiseCrackCollector.Controllers
         [Route("/Groups/{groupId}")]
         public IActionResult Details(string groupId)
         {
+            string redirectTo = "MyGroups";
+            if (Request.Cookies.ContainsKey("redirectTo"))
+                redirectTo = Request.Cookies["redirectTo"];
+
             // check if group exists
             if (!groupService.IsGroupExists(groupId))
                 return NotFound();
@@ -141,8 +147,8 @@ namespace WiseCrackCollector.Controllers
                 Group = group,
                 Wisecracks = group.Wisecracks,
                 Permissions = membership,
-                SortBy = WisecrackListSortBy.Date,
-                SortOrder = WisecrackListSortOrder.Descending
+                RedirectAction = redirectTo == "MyMemberships" ? "MyMemberships" : "MyGroups",
+                RedirectTitle = redirectTo == "MyMemberships" ? "Memberships" : "My Groups"
             };
 
             return View(groupViewModel);

@@ -23,6 +23,25 @@ function SetWisecrackDeleteID(id) {
     document.getElementById('delete_wc_id').value = id;
 }
 
+function SetMembershipDeleteData(userId, userName) {
+    document.getElementById('delete_member_user_id').value = userId;
+    document.getElementById('delete_member_user_name').innerText = userName;
+}
+
+function BoolToChecked(boolValue) {
+    return boolValue.toLowerCase() === "true";
+}
+
+function SetMembershipEditorData(userId, userName, permRead, permAdd, permUpdate, permDelete, permManageMembers) {
+    document.getElementById('edit_membership_user_id').value = userId;
+    document.getElementById('edit_membership_perm_read').checked = BoolToChecked(permRead);
+    document.getElementById('edit_membership_perm_update').checked = BoolToChecked(permUpdate);
+    document.getElementById('edit_membership_perm_add').checked = BoolToChecked(permAdd);
+    document.getElementById('edit_membership_perm_delete').checked = BoolToChecked(permDelete);
+    document.getElementById('edit_membership_perm_members').checked = BoolToChecked(permManageMembers);
+    document.getElementById('edit_membership_user_name').innerText = userName;
+}
+
 function decodeHtml(html) {
     var txt = document.createElement("textarea");
     txt.innerHTML = html;

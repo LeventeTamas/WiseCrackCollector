@@ -1,4 +1,5 @@
 ﻿@model GroupMembersViewModel
+@using System.Web
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -34,13 +35,13 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
-            <form id="addMemberModal" asp-controller="Members" asp-action="Add" method="post">
-                <input type="hidden" name="new_member_groupId" value="@Model.Group.Id" />
+            <form id="addMemberForm" asp-controller="Members" asp-action="Add" method="post">
+                <input type="hidden" name="new_member_group_id" value="@Model.Group.Id" />
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="new_member_id" class="col-form-label">New member:</label>
-                        <select name="new_member_id">
+                        <select name="new_member_user_id">
                             @foreach (AppUser user in Model.NotMemberUsers)
                             {
                                 <option value="@user.Id">@user.UserName (@user.Email)</option>
@@ -82,6 +83,92 @@
     </div>
 </div>
 
+<!-- Edit Membership Modal -->
+<div class="modal" id="modalEditMembership">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Membership</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="editMembershipForm" asp-controller="Members" asp-action="Update" method="post">
+                <input type="hidden" name="edit_membership_group_id" value="@Model.Group.Id" />
+                <input type="hidden" id="edit_membership_user_id" name="edit_membership_user_id" />
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_membership_user_name" class="col-form-label">Member:</label>
+                        <span name="edit_membership_user_name" id="edit_membership_user_name"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Permissions:</label>
+                        <div class="form-check">
+                            <input type="checkbox" name="edit_membership_perm_add" id="edit_membership_perm_add" class="form-check-input" />
+                            <label class="form-class-label" for="edit_membership_perm_add">Add</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="edit_membership_perm_read" id="edit_membership_perm_read" class="form-check-input" />
+                            <label class="form-class-label" for="edit_membership_perm_read">Read</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="edit_membership_perm_update" id="edit_membership_perm_update" class="form-check-input" />
+                            <label class="form-class-label" for="edit_membership_perm_update">Update</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="edit_membership_perm_delete" id="edit_membership_perm_delete" class="form-check-input" />
+                            <label class="form-class-label" for="edit_membership_perm_delete">Delete</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="edit_membership_perm_members" id="edit_membership_perm_members" class="form-check-input" />
+                            <label class="form-class-label" for="edit_membership_perm_members">Manage members</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Update" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Membership Modal -->
+<div class="modal" id="modalDeleteMembership">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Remove Member</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="deleteMembershipForm" asp-controller="Members" asp-action="Delete" method="post">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Are you sure you want to remove <span id="delete_member_user_name"></span> from the group?</label>
+                        <input type="hidden" name="delete_member_group_id" value="@Model.Group.Id" />
+                        <input type="hidden" id="delete_member_user_id" name="delete_member_user_id" />
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Remove" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <h3 class="list-title">Member List</h3>
 <table class="table">
     <thead>
@@ -101,14 +188,19 @@
         {
             <tr>
                 <td>@membership.User.UserName</td>
-                <td></td>
+                <td>@membership.JoinedAt.ToString("yyyy.MM.dd")</td>
                 <td>@membership.Read</td>
                 <td>@membership.Add</td>
                 <td>@membership.Update</td>
                 <td>@membership.Delete</td>
                 <td>@membership.ManageMembers</td>
                 <td class="text-end">
-                    
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditMembership" onclick="SetMembershipEditorData('@membership.UserId', '@HttpUtility.HtmlEncode(membership.User.UserName)', '@membership.Read', '@membership.Add', '@membership.Update', '@membership.Delete', '@membership.ManageMembers')">
+                        Permissions
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalDeleteMembership" onclick="SetMembershipDeleteData('@membership.UserId', '@HttpUtility.HtmlEncode(membership.User.UserName)')">
+                        Remove
+                    </button>
                 </td>
             </tr>
         }
