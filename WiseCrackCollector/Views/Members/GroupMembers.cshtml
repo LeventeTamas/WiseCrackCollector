@@ -174,12 +174,12 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th class="text-center">Read</th>
+            <th class="text-center">Add</th>
+            <th class="text-center">Update</th>
+            <th class="text-center">Delete</th>
+            <th class="text-center">Manage<br />Members</th>
             <th>Joined At</th>
-            <th>Read</th>
-            <th>Add</th>
-            <th>Update</th>
-            <th>Delete</th>
-            <th>Manage Members</th>
             <th></th>
         </tr>
     </thead>
@@ -188,13 +188,13 @@
         {
             <tr>
                 <td>@membership.User.UserName</td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@membership.Read" disabled /></td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@membership.Add" disabled /></td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@membership.Update" disabled /></td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@membership.Delete" disabled /></td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@membership.ManageMembers" disabled /></td>
                 <td>@membership.JoinedAt.ToString("yyyy.MM.dd")</td>
-                <td>@membership.Read</td>
-                <td>@membership.Add</td>
-                <td>@membership.Update</td>
-                <td>@membership.Delete</td>
-                <td>@membership.ManageMembers</td>
-                <td class="text-end">
+                <td>
                     <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalEditMembership" onclick="SetMembershipEditorData('@membership.UserId', '@HttpUtility.HtmlEncode(membership.User.UserName)', '@membership.Read', '@membership.Add', '@membership.Update', '@membership.Delete', '@membership.ManageMembers')">
                         Permissions
                     </button>
