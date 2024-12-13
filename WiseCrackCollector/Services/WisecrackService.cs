@@ -42,6 +42,11 @@ namespace WiseCrackCollector.Services
             return dbContext.Wisecracks.Include(w => w.Group).Include(w => w.Group.Owner).Include(w => w.Owner).First(w => w.Id.Equals(wisecrackId));
         }
 
+        public List<Wisecrack> GetWisecracksByGroupId(string groupId)
+        {
+            return dbContext.Wisecracks.Include(w => w.Group).Include(w => w.Owner).Where(w => w.Group.Id.Equals(groupId)).ToList();
+        }
+
         public void DeleteWisecrack(Wisecrack wisecrack)
         {
             dbContext.Remove(wisecrack);

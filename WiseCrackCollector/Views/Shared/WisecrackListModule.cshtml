@@ -72,22 +72,24 @@
 <table class="table">
     <thead>
         <tr>  
-            <th>Said By</th>
+            <th class="text-nowrap">Said By</th>
             <th>Wisecrack</th>
             <th>Views</th>
-            <th>Created At</th>
+            <th class="text-nowrap">Added By</th>
+            <th class="text-nowrap">Added At</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var wisecrack in Model.Wisecracks)
+        @foreach (Wisecrack wisecrack in Model.Wisecracks)
         {
             <tr>
                 <td>@wisecrack.SaidBy</td>
                 <td>@wisecrack.Content</td>
                 <td>@wisecrack.Views</td>
+                <td>@wisecrack.Owner.UserName</td>
                 <td>@wisecrack.CreatedAt.ToString("yyyy.MM.dd")</td>
-                <td class="text-end">
+                <td class="text-end text-nowrap">
                     @if (Model.Permissions.Update)
                     {
                         string addedAt = wisecrack.CreatedAt.ToString("yyyy-MM-dd");

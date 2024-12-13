@@ -140,12 +140,13 @@ namespace WiseCrackCollector.Controllers
                 return Forbid();
 
             Group group = groupService.GetGroupById(groupId);
+            List<Wisecrack> wisecracks = wisecrackService.GetWisecracksByGroupId(groupId);
 
             // Create view model
             GroupViewModel groupViewModel = new GroupViewModel()
             {
                 Group = group,
-                Wisecracks = group.Wisecracks,
+                Wisecracks = wisecracks,
                 Permissions = membership,
                 RedirectAction = redirectTo == "MyMemberships" ? "MyMemberships" : "MyGroups",
                 RedirectTitle = redirectTo == "MyMemberships" ? "Memberships" : "My Groups"

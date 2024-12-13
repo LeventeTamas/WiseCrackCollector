@@ -74,7 +74,6 @@ namespace WiseCrackCollector.Services
         {
             return dbContext.Groups
                 .Include(g => g.Owner)
-                .Include(g => g.Wisecracks)
                 .First(g => g.Id.Equals(groupId));
         }
 

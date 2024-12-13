@@ -7,6 +7,7 @@ namespace WiseCrackCollector.Services
         void DeleteWisecracksByGroupId(string groupId);
         void AddWisecrack(string groupId, Wisecrack newWisecrack);
         Wisecrack GetWisecrackById(string delete_wc_id);
+        List<Wisecrack> GetWisecracksByGroupId(string groupId);
         void DeleteWisecrack(Wisecrack wisecrack);
         void UpdateWisecrack(Wisecrack wisecrack);
         bool IsWisecrackExists(string wisecrackId);
